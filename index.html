@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>County Health Ranking Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+          crossorigin="anonymous"/>
+    <link rel="icon" type="image/png" href="img/favicon.png"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova" rel="stylesheet">
+    <!-- Bootstrap 4.5.2 CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+          crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
+    <!-- Customized CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<header id="header" class="full-height">
+
+<div style="background: #D6D6D6">
+    <div style="height:150px"></div>
+    <div class="row justify-content-center center">
+        <h3 class="text-center" data-aos="fade-in" data-aos-delay="0">
+            County Health Rankings</h3>
+        <div style="height:80px"></div>
+        <h6 data-aos="fade-in" data-aos-delay="100">
+            How does geography and city location relate to the proportion of children growing up in single-parent households?</h6>
+        <p>When dealing with location-related and geographic data, the go-to visualization is a choropleth map. They are
+            simple to understand, colourful, and clear, but their quality relies on how the borders of each region
+            are defined. Using strict borders in a map seems reasonable when mapping different countries
+            because nations often represent distinct populations with little movement between the two. But what about countries
+        with states, where people are likely to move between the regions depicted on the map?</p>
+        <p>Imagine I wanted to investigate the general geographic trend of the proportion of children living in single
+        parent households in the US beyond just looking at the states. I could bundle the states into regions and plot
+        those but this would result in a lot of information being lost within the map. Inspired by
+            <a href="https://waves-of-interest.truth-and-beauty.net/#US">this</a> visualization to consider
+            how contours can be used to convey location-related data. Using D3.js, I built this tool to investigate
+            the relationship between socioeconomic determinants of health and location which shows the contour plots
+            implemented at both the national and state level.
+        </p>
+    </div>
+    <div class="heat-section-container">
+        <div id="heat-map"></div>
+
+        <div class="heat-text-div" style="height:70vh; margin-top:1vh;">
+            <h4 id="heat-map-stateDiv" style="color:#4F4F51;height: 3vh;margin: 5px 0 20px 0;">
+                All States
+            </h4>
+            <!-- Radio buttons -->
+            <div id="heat-radio-div" style="margin-top: 1vh; color:#4F4F51;height:10vh;">
+                <div>
+                    <label class="form-check-label" for="ExcessiveDrinking"
+                           style="margin-right: 0.5vw;">Children in Single Parent Households</label>
+                    <input style="margin-left: 5px;" class="form-check-input" type="radio"
+                           name="inlineRadioOptions" id="SingleParentHouseholds"
+                           value="PercentageSingleParent" onclick="selectionChange()" checked>
+                </div>
+                <div>
+                    <label class="form-check-label" for="PercentageDrivingDeath"
+                           style="margin-right: 0.5vw;">Alcohol-involved Driving Death</label>
+                    <input style="margin-left: 5px;" class="form-check-input" type="radio"
+                           name="inlineRadioOptions" id="PercentageDrivingDeath"
+                           value="PercentageDrivingDeath" onclick="selectionChange()">
+                </div>
+            </div>
+
+            <div id="heatmap-descriptionDiv" style="height: 57vh; margin-right: 4vw;">
+            </div>
+
+            <div id="heatmap-hintDiv" style="height: 5vh; font-size:14px; color:#bb9b64">
+            </div>
+
+            <button id="heatmap-navigationDiv" style="display: none;">
+                Back to all states
+            </button>
+        </div>
+        <div id="stateDiv" style="margin: 0 0 3vh 0; opacity: 0; display: none;">
+            <select id='stateSelector'
+                    style="width: 100%; height:100%; background: transparent; font-size: 12px;"
+                    onchange="selectionChange()">
+                <option value="allStates" selected>All States</option>
+                <option value="Alabama">Alabama</option>
+                <option value="Arizona">Arizona</option>
+                <option value="Arkansas">Arkansas</option>
+                <option value="California">California</option>
+                <option value="Colorado">Colorado</option>
+                <option value="Connecticut">Connecticut</option>
+                <option value="Delaware">Delaware</option>
+                <option value="Florida">Florida</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Idaho">Idaho</option>
+                <option value="Illinois">Illinois</option>
+                <option value="Indiana">Indiana</option>
+                <option value="Iowa">Iowa</option>
+                <option value="Kansas">Kansas</option>
+                <option value="Kentucky">Kentucky</option>
+                <option value="Louisiana">Louisiana</option>
+                <option value="Maine">Maine</option>
+                <option value="Maryland">Maryland</option>
+                <option value="Massachusetts">Massachusetts</option>
+                <option value="Michigan">Michigan</option>
+                <option value="Minnesota">Minnesota</option>
+                <option value="Mississippi">Mississippi</option>
+                <option value="Missouri">Missouri</option>
+                <option value="Montana">Montana</option>
+                <option value="Nebraska">Nebraska</option>
+                <option value="Nevada">Nevada</option>
+                <option value="New Hampshire">New Hampshire</option>
+                <option value="New Jersey">New Jersey</option>
+                <option value="New Mexico">New Mexico</option>
+                <option value="New York">New York</option>
+                <option value="North Carolina">North Carolina</option>
+                <option value="North Dakota">North Dakota</option>
+                <option value="Ohio">Ohio</option>
+                <option value="Oklahoma">Oklahoma</option>
+                <option value="Oregon">Oregon</option>
+                <option value="Pennsylvania">Pennsylvania</option>
+                <option value="Rhode Island">Rhode Island</option>
+                <option value="South Carolina">South Carolina</option>
+                <option value="South Dakota">South Dakota</option>
+                <option value="Tennessee">Tennessee</option>
+                <option value="Texas">Texas</option>
+                <option value="Utah">Utah</option>
+                <option value="Vermont">Vermont</option>
+                <option value="Virginia">Virginia</option>
+                <option value="Washington">Washington</option>
+                <option value="West Virginia">West Virginia</option>
+                <option value="Wisconsin">Wisconsin</option>
+                <option value="Wyoming">Wyoming</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/libraries/jquery.min.js">')
+</script>
+
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+<script src="https://d3js.org/d3-geo.v2.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v3.min.js"></script>
+<script src="https://d3js.org/d3-voronoi.v1.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+
+
+<script src="js/heat-map.js"></script>
+<script src="js/heat-map-mapVis.js"></script>
+
+
+
+</body>
+</html>
